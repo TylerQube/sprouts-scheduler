@@ -1,5 +1,6 @@
 import file_loader
 import volunteer
+import sheet_builder
 import time
 
 shift_path = "shifts.yaml"
@@ -8,7 +9,7 @@ shift_path = "shifts.yaml"
 def schedule_volunteers(
     shifts, volunteers, v_index, cur_schedule, best_schedule, start_time
 ):
-    if time.time() - start_time > 5:
+    if time.time() - start_time > 0.3:
         return
     # if len(cur_schedule) + len(volunteers) - v_index <= len(best_schedule):
     #     return
@@ -79,10 +80,9 @@ def main():
     unique_volunteers = set()
     for s in shifts:
         for v in s.volunteers:
-            if v in unique_volunteers:
-                print(v)
             unique_volunteers.add(v)
-    print(len(unique_volunteers))
+
+    sheet_builder.build_spreadsheet(shifts)
 
 
 main()
