@@ -11,9 +11,6 @@ def schedule_volunteers(
 ):
     if time.time() - start_time > 0.3:
         return
-    # if len(cur_schedule) + len(volunteers) - v_index <= len(best_schedule):
-    #     return
-    # print(f'{v_index}: {cur_schedule}')
     if v_index == len(volunteers):
         if len(cur_schedule) > len(best_schedule):
             best_schedule.clear()
@@ -25,6 +22,10 @@ def schedule_volunteers(
     is_assigned = False
     for index in sorted(range(len(shifts)), key=lambda i: shifts[i].num_available):
         shift = shifts[index]
+
+        # skip on-call shifts, save for second pass because can be double-booked
+        if "On-call" in shift.time:
+            continue
         if id(shift) not in v.availability or not shift.add_volunteer(v.name):
             continue
         cur_schedule.append((v.name, shift))
@@ -39,6 +40,18 @@ def schedule_volunteers(
         schedule_volunteers(
             shifts, volunteers, v_index + 1, cur_schedule, best_schedule, start_time
         )
+
+def schedule_on_call(shifts, volunteers):
+    for v in volunteers:
+        if "Harkirat" not in v.name:
+            continue
+        for s in shifts:
+            if "on-call" not in s.time.lower():
+                continue
+            if len(s.volunteers) >= s.capacity:
+                continue
+            if id(s) in v.availability:
+                s.add_volunteer(v.name)
 
 
 def run_scheduler(shifts, vollies):
@@ -56,14 +69,13 @@ def run_scheduler(shifts, vollies):
     print(f"Schedule generated in: {time.time() - start}")
 
     for pair in schedule:
-        # print(f'{pair[0]}: {pair[1]}')
         pair[1].add_volunteer(pair[0])
+    schedule_on_call(shifts, vollies)
 
 
 def main():
     with open("sprouts.logo", "r") as logo:
         data = logo.read()
-        print(data)
     print("Welcome to the Sprout-o-Matic Shift Scheduler!", "\n")
     form_data = file_loader.get_file()
 
@@ -72,17 +84,23 @@ def main():
     shifts = file_loader.parse_shifts(yaml)
 
     vollies = volunteer.load_volunteers(form_data, shifts)
+    # for s in shifts:
+    #     print(s)
+    #     print("\n")
+
 
     vollies = list(filter(lambda v: (len(v.availability) > 0), vollies))
 
     run_scheduler(shifts, vollies)
 
-    unique_volunteers = set()
-    for s in shifts:
-        for v in s.volunteers:
-            unique_volunteers.add(v)
+    # unique_volunteers = set()
+    # for s in shifts:
+    #     for v in s.volunteers:
+    #         unique_volunteers.add(v)
+    # for s in shifts:
+    #     print(s, "\n")
 
-    sheet_builder.build_spreadsheet(shifts)
+    # sheet_builder.build_spreadsheet(shifts)
 
 
 main()

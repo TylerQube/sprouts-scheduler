@@ -27,7 +27,6 @@ SPROUTS CAFE HELPER:
       - wed
       - thur
     slots: 6
-
 PREP:
   - time: 5-8pm
     days:
@@ -50,3 +49,47 @@ COMMUNITY EATS SERVER:
     days:
       - fri
     slots: 8
+
+# PRODUCE MARKET SHIFTS
+PRODUCE POSSE:
+  - time: 5:30-7pm
+    days:
+      - wed
+    slots: 2
+  - time: 1-3pm 
+    days:
+      - tues
+    slots: 2
+SET-UP SQUAD:
+  - time: 4-5:30pm
+    days:
+      - wed
+    slots: 2
+  - time: 11am-1pm 
+    days:
+      - tues
+    slots: 2
+
+# DRIVER SHIFTS
+DONATION DRIVER:
+  - time: On-Call
+    slots: 20
+  - time: 10:30am-12:30pm
+    days:
+      - wed
+    slots: 2 # no real capacity, just set to reasonable number
+
+# COMMUNITY FRIDGE SHIFTS
+STOCKING SQUAD:
+  - time: On-Call
+    slots: 20
+  - time: 11am-1pm
+    days:
+      - wed
+    slots: 2
+CLEANUP CREW:
+  - time: 4pm-5pm
+    days:
+      - tues
+      - fri
+    slots: 2
