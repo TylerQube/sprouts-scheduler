@@ -97,10 +97,8 @@ def main():
     # for s in shifts:
     #     for v in s.volunteers:
     #         unique_volunteers.add(v)
-    # for s in shifts:
-    #     print(s, "\n")
 
-    # sheet_builder.build_spreadsheet(shifts)
+    sheet_builder.build_spreadsheet(shifts)
 
 
 main()

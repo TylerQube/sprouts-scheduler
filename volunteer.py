@@ -34,10 +34,11 @@ class Volunteer:
                         if "SET-UP SQUAD" in s.initiative and "SET-UPSQUAD" in t:
                             t = t.replace("SET-UPSQUAD", "")
 
+                        print(f"{day.lower()} {s.day}")
                         if (
                             job_name != s.initiative
                             or len(day) > 0
-                            and s.day not in day.lower()
+                            and s.day.lower() not in day.lower()
                             or t != s.time
                         ):
                             continue

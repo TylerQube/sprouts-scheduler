@@ -1,73 +1,73 @@
 SPROUTS CAFE HELPER:
   - time: 9am-11am
     days:
-      - mon
-      - tues
-      - wed
-      - thur
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
     slots: 8
   - time: 11am-1pm
     days:
-      - mon
-      - tues
-      - wed
-      - thur
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
     slots: 8
   - time: 1-3pm
     days:
-      - mon
-      - tues
-      - wed
-      - thur
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
     slots: 8
   - time: 3-5pm
     days:
-      - mon
-      - tues
-      - wed
-      - thur
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
     slots: 6
 PREP:
   - time: 5-8pm
     days:
-      - sun
-      - mon
-      - tues
-      - wed
-      - thur
+      - Sunday
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
     slots: 6
 COMMUNITY EATS SERVER:
   - time: 9-11am
     days:
-      - fri
+      - Friday
     slots: 8
   - time: 11am-1pm
     days:
-      - fri
+      - Friday
     slots: 8
   - time: 1pm-3:30pm
     days:
-      - fri
+      - Friday
     slots: 8
 
 # PRODUCE MARKET SHIFTS
 PRODUCE POSSE:
   - time: 5:30-7pm
     days:
-      - wed
+      - Wednesday
     slots: 2
   - time: 1-3pm 
     days:
-      - tues
+      - Tuesday
     slots: 2
 SET-UP SQUAD:
   - time: 4-5:30pm
     days:
-      - wed
+      - Wednesday
     slots: 2
   - time: 11am-1pm 
     days:
-      - tues
+      - Tuesday
     slots: 2
 
 # DRIVER SHIFTS
@@ -76,20 +76,20 @@ DONATION DRIVER:
     slots: 20
   - time: 10:30am-12:30pm
     days:
-      - wed
+      - Wednesday
     slots: 2 # no real capacity, just set to reasonable number
 
-# COMMUNITY FRIDGE SHIFTS
+# COMMUNITY FridayDGE SHIFTS
 STOCKING SQUAD:
   - time: On-Call
     slots: 20
   - time: 11am-1pm
     days:
-      - wed
+      - Wednesday
     slots: 2
 CLEANUP CREW:
   - time: 4pm-5pm
     days:
-      - tues
-      - fri
+      - Tuesday
+      - Friday
     slots: 2
