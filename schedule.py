@@ -64,9 +64,9 @@ def run_scheduler(shifts, vollies):
     schedule = []
     start = time.time()
     schedule_volunteers(shifts, vollies, 0, [], schedule, time.time())
-    print(f"{len(schedule)} / {len(vollies)} scheduled")
-    print(f"{len(schedule)} / {num_spaces} positions filled")
     print(f"Schedule generated in: {time.time() - start}")
+    print(f"{len(schedule)} / {len(vollies)} volunteers scheduled")
+    print(f"{len(schedule)} / {num_spaces} positions filled")
 
     for pair in schedule:
         pair[1].add_volunteer(pair[0])
@@ -84,11 +84,6 @@ def main():
     shifts = file_loader.parse_shifts(yaml)
 
     vollies = volunteer.load_volunteers(form_data, shifts)
-    # for s in shifts:
-    #     print(s)
-    #     print("\n")
-
-
     vollies = list(filter(lambda v: (len(v.availability) > 0), vollies))
 
     run_scheduler(shifts, vollies)

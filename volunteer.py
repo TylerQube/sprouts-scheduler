@@ -1,6 +1,5 @@
 import re
 
-
 class Volunteer:
     def __init__(self, name, email, phone, returning):
         self.name = name
@@ -34,7 +33,6 @@ class Volunteer:
                         if "SET-UP SQUAD" in s.initiative and "SET-UPSQUAD" in t:
                             t = t.replace("SET-UPSQUAD", "")
 
-                        print(f"{day.lower()} {s.day}")
                         if (
                             job_name != s.initiative
                             or len(day) > 0
