@@ -16,7 +16,7 @@ def build_spreadsheet(shifts):
     ce_shifts = list(filter(lambda s: s.initiative == "COMMUNITY EATS SERVER", shifts))
     oncall_row = fill_community_eats(next_row, 1, ce_shifts, wb)
 
-    pm_shifts = list(filter(lambda s: s.initiative == "PRODUCE POSSE" or s.initiative == "SET-UP SQUAD", shifts))
+    pm_shifts = list(filter(lambda s: s.initiative == "PRODUCE POSSE" or s.initiative == "MARKET SET-UP", shifts))
     fill_produce_market(next_row, 7, pm_shifts, wb)
 
     sm_shifts = list(filter(lambda s: s.initiative == "DONATION DRIVER", shifts))
@@ -111,7 +111,7 @@ def fill_produce_market(start_row, start_col, pm_shifts, wb):
     ci = 1
     pm_shifts.sort(key=lambda s: (
         ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].index(s.day),
-        ["SET-UP SQUAD", "PRODUCE POSSE"].index(s.initiative)
+        ["MARKET SET-UP", "PRODUCE POSSE"].index(s.initiative)
     ))
     cur_day = ""
     for i in range(len(pm_shifts)):
@@ -315,7 +315,7 @@ def fill_cafe(cafe_shifts, wb):
 
         s = cafe_shifts[i]
         ws.cell(row, col).value = s.time
-        for iv in range(8):
+        for iv in range(cafe_shifts[i].capacity):
             c = ws.cell(row + iv, col + 1)
             if iv < len(s.volunteers):
                 c.value = s.volunteers[iv]
