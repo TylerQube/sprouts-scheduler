@@ -133,16 +133,17 @@ def fill_sproutsmobile(start_row, start_col, sm_shifts, wb):
 
     # fill in shifts
     ci = 2
-    time_shifts = [s for s in sm_shifts if s.day != "n/a"]
+    time_shifts = [s for s in sm_shifts if s.day.lower() != "n/a"]
     for i in range(len(time_shifts)):
         s = time_shifts[i]
         ws.cell(row, col).value = s.time
-        for iv, v in enumerate(s.volunteers):
+        for iv in range(s.capacity):
             c = ws.cell(row + iv, col+1)
-            c.value = v
+            if iv < len(s.volunteers):
+                c.value = s.volunteers[iv]
             fill_cell(c, sm_colors[ci])
             fill_cell(ws.cell(row + iv, col), sm_colors[ci])
-        row += len(s.volunteers)
+        row += s.capacity
         ci += 1
         if ci == 3:
             ci = 1
@@ -156,7 +157,7 @@ def fill_sproutsmobile(start_row, start_col, sm_shifts, wb):
     c = ws.cell(row, col)
     fill_cell(c, sm_colors[1])
     c.value = "ON CALL DRIVERS"
-    on_call = [s for s in sm_shifts if s.day == "n/a"][0]
+    on_call = [s for s in sm_shifts if s.day.lower() == "n/a"][0]
     for iv, v in enumerate(on_call.volunteers):
         c = ws.cell(row + iv, col+1)
         c.value = v
@@ -187,7 +188,7 @@ def fill_community_eats(start_row, start_col, ce_shifts, wb):
 
     # fill in shifts
     ci = 2
-    ce_shifts.sort(key=lambda s: (["9-11am", "11am-1pm", "1pm-3:30pm"].index(s.time)))
+    ce_shifts.sort(key=lambda s: (["9am-11am", "11am-1pm", "1pm-3:30pm"].index(s.time)))
     for i in range(len(ce_shifts)):
         s = ce_shifts[i]
         ws.cell(row, col).value = s.time
@@ -240,7 +241,7 @@ def fill_prep(start_row, prep_shifts, wb):
     max_volunteers_in_row = len(
         max(prep_shifts, key=lambda s: len(s.volunteers)).volunteers
     )
-    row += max_volunteers_in_row
+    row += prep_shifts[0].capacity
     return row
 
 
@@ -256,7 +257,7 @@ def fill_cafe(cafe_shifts, wb):
     # sort in grid order
     cafe_shifts.sort(
         key=lambda s: (
-            ["9am-11am", "11am-1pm", "1-3pm", "3-5pm"].index(s.time),
+            ["9am-11am", "11am-1pm", "1pm-3pm", "3pm-5pm"].index(s.time),
             ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].index(s.day),
         )
     )
@@ -279,10 +280,7 @@ def fill_cafe(cafe_shifts, wb):
     row = 3
     for i in range(len(cafe_shifts) + 1):
         if i > 0 and i % 4 == 0 or i >= len(cafe_shifts):
-            max_volunteers_in_row = len(
-                max(row_shifts, key=lambda s: len(s.volunteers)).volunteers
-            )
-            row += max_volunteers_in_row
+            row += max(cafe_shifts, key=lambda s: s.capacity).capacity
             ci = (ci + 1) % 2
             if i >= len(cafe_shifts):
                 break
@@ -291,13 +289,14 @@ def fill_cafe(cafe_shifts, wb):
 
         s = cafe_shifts[i]
         ws.cell(row, col).value = s.time
-        for iv, v in enumerate(s.volunteers):
+        for iv in range(8):
             c = ws.cell(row + iv, col + 1)
-            c.value = v
+            if iv < len(s.volunteers):
+                c.value = s.volunteers[iv]
             fill_cell(c, colors[ci])
             c = ws.cell(row + iv, col)
             fill_cell(c, colors[ci])
 
         col += 2
         col = (col - 1) % 8 + 1
-    return row
+    return row + 2

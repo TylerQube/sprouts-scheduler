@@ -13,47 +13,23 @@ class Volunteer:
 
 
 
-    # TODO - Add support for stocking squad shifts (uses different google form name syntax)
-    def load_availability(self, form, shifts):
+    def load_availability(self, form):
         for column, value in form.items():
-            if type(value) == float or "available" not in column:
+            if type(value) == float or "available" not in column and "on-call volunteer" not in column:
                 continue
 
-            availables = available_from_form_column(column, value)
-            for a in availables:
-                times = a["times"]
-                job_name = a["job_name"]
-                day = a["day"]
 
-                for t in times:
-                    t = t.replace(" ", "")
-                    for s in shifts:
+            self.availability += available_from_form_column(column, value)
 
-                        # special syntax handling
-                        if "SET-UP SQUAD" in s.initiative and "SET-UPSQUAD" in t:
-                            t = t.replace("SET-UPSQUAD", "")
-
-                        if (
-                            job_name != s.initiative
-                            or len(day) > 0
-                            and s.day.lower() not in day.lower()
-                            or t != s.time
-                        ):
-                            continue
-                        # add to availability
-                        s.num_available += 1
-                        self.availability.append(id(s))
-
-
-def load_volunteers(table, shifts):
+def load_volunteers(table):
     vollies = []
     for index, row in table.iterrows():
         # if index != 0:
         #     continue
         vol = Volunteer(
-            row["Name"],
+            row["First and last name"],
             row["Email"],
-            row["Phone Number"],
+            row["Phone number"],
             row["Are you a returning volunteer?"] == "Yeah I am!",
         )
 
@@ -64,35 +40,69 @@ def load_volunteers(table, shifts):
         if existing:
             vollies.remove(existing)
 
-        vol.load_availability(row, shifts)
+        vol.load_availability(row)
 
         vollies.append(vol)
 
     return vollies
 
+jobs = [
+    "SPROUTS CAFE HELPER",
+    "PREP",
+    "COMMUNITY EATS SERVER",
+    "PRODUCE MARKET",
+    "DONATION DRIVER",
+    "FRIDGE"
+]
+
+days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "On-call"
+]
 def available_from_form_column(column, value):
     avails = []
     times = value.split(",")
-    job_name = column[4 : column.index(",")]
-    day = (
-        column[column.index(":") + 1 : :]
-        .strip()
-        .replace("[", "")
-        .replace("]", "")
-    )
-
-    if "PRODUCE MARKET" in job_name:
+    job_name = "n/a"
+    for j in jobs:
+        if j.lower() in column.lower():
+            job_name = j
+    
+    day = "n/a"
+    for d in days:
+        if d.lower() in value.lower():
+            day = d
+            break
+        if d.lower() in column.lower():
+            day = d
+            break
+    
+    if "on-call volunteer" in column:
+        if "no" in value.lower():
+            return avails
+        avails.append({
+            "job_name": "ON-CALL",
+            "day": "N/A",
+            "time": "N/A"
+        })
+        return avails
+    elif "PRODUCE MARKET" in job_name:
         for t in times:
-            if "SET-UP" in t:
-                job_name = "SET-UP SQUAD"
-                t = t.replace("SET-UP SQUAD", "").strip()
+            if "Morning" in t:
+                job_name = "MARKET SET-UP"
+                t = t.replace("MARKET SET-UP", "").strip()
             else:
                 job_name = "PRODUCE POSSE"
                 t = t.replace("PRODUCE POSSE", "").strip()
             avails.append({
                 "job_name": job_name,
                 "day": day,
-                "times": [t]
+                "time": t
             })
     elif "DONATION DRIVER" in job_name:
         for t in times:
@@ -101,31 +111,42 @@ def available_from_form_column(column, value):
                 day = "N/A"
                 time = "On-Call"
             else:
-                time = t[0:t.index(" ")]
-                day = t[t.index(" "):].strip()
+                day = t[0:t.index(" ")]
+                time = t[t.index(" "):].strip()
 
             avails.append({
                 "job_name": job_name,
                 "day": day,
-                "times": [time]
+                "time": time
             })
-    elif "CLEANUP CREW" in job_name or "STOCKING SQUAD" in job_name:
+
+    # TODO - fix parsing logic
+    elif "FRIDGE" in job_name:
         for t in times:
-            if "on-call" in t.lower():
+            t = t.strip()
+            if "clean" in t:
+                job_name = "STOCKING SQUAD"
+                day  = t[0:t.index(" ")]
+                time = t[t.index(" ")+1:]
+            elif "on-call" in t.lower():
+                job_name = "FRIDGE ON-CALL"
                 day = "N/A"
                 time = "On-Call"
             else:
-                day  = t[0:t.index(" ")-1]
+                job_name = "CLEANUP CREW"
+                day  = t[0:t.index(" ")]
                 time = t[t.index(" ")+1:]
+
             avails.append({
                 "job_name": job_name,
                 "day": day,
-                "times": [time]
+                "time": time
             })
     else:
-        avails.append({
-            "job_name": job_name,
-            "day": day,
-            "times": times
-        })
+        for t in times:
+            avails.append({
+                "job_name": job_name,
+                "day": day,
+                "time": t
+            })
     return avails

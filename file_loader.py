@@ -12,7 +12,8 @@ def load_yaml(path):
 def get_file():
     while True:
         print("Please specify a CSV file containing volunteer form responses:")
-        fname = input()
+        fname = "newform.csv"
+        # fname = input()
         print()
         try:
             file = pd.read_csv(fname)
