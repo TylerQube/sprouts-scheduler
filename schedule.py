@@ -4,9 +4,6 @@ import sheet_builder
 import time
 from shift import Shift
 
-shift_path = "shifts.yaml"
-
-
 MAX_TIME = 5.0
 def schedule_volunteers(
     shifts, volunteers, v_index, cur_schedule, best_schedule, start_time
@@ -149,9 +146,9 @@ def get_shift_capacity(initiative, day, time):
 def main():
     with open("sprouts.logo", "r") as logo:
         data = logo.read()
+    print(data)
     print("Welcome to the Sprout-o-Matic Shift Scheduler!", "\n")
     form_data = file_loader.get_file()
-
     vollies = volunteer.load_volunteers(form_data)
 
     print("Loading shifts...")
