@@ -134,7 +134,7 @@ shift_capacity = {
 }
 def get_shift_capacity(initiative, day, time):
     if "on-call" in initiative.lower():
-        return 50
+        return 200 
 
     if "on-call" in time.lower() or "n/a" in day.lower():
         return shift_capacity["ON-CALL"]

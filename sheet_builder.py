@@ -14,7 +14,7 @@ def build_spreadsheet(shifts):
     next_row = fill_prep(next_row, prep_shifts, wb) + 2
 
     ce_shifts = list(filter(lambda s: s.initiative == "COMMUNITY EATS SERVER", shifts))
-    fill_community_eats(next_row, 1, ce_shifts, wb)
+    oncall_row = fill_community_eats(next_row, 1, ce_shifts, wb)
 
     pm_shifts = list(filter(lambda s: s.initiative == "PRODUCE POSSE" or s.initiative == "SET-UP SQUAD", shifts))
     fill_produce_market(next_row, 7, pm_shifts, wb)
@@ -25,12 +25,37 @@ def build_spreadsheet(shifts):
     fridge_shifts = list(filter(lambda s: s.initiative == "STOCKING SQUAD" or s.initiative == "CLEANUP CREW", shifts))
     fill_fridge(next_row, 4, fridge_shifts, wb)
 
+    oc_shifts = list(filter(lambda s: s.initiative == "ON-CALL", shifts))
+    fill_oncall(oncall_row + 1, 1, oc_shifts, wb)
+
 
     wb.save("output.xlsx")
 
 
 def fill_cell(cell, color):
     cell.fill = PatternFill(start_color=color, end_color=color, fill_type="solid")
+
+oc_colors = ["FF7BAC", "FFA6C7", "FFC9DE"]
+def fill_oncall(start_row, start_col, oc_shifts, wb):
+    ws = wb.active
+    row = start_row
+    col = start_col 
+    header = ws.cell(row, col)
+    header.value = "ON-CALL VOLUNTEERS"
+    for i in range(col, col + 2):
+        fill_cell(ws.cell(row, i), oc_colors[0])
+    row += 1
+
+
+    on_call = oc_shifts[0]
+    for iv, v in enumerate(on_call.volunteers):
+        c = ws.cell(row + iv, col+1)
+        c.value = v
+        fill_cell(c, oc_colors[1])
+        fill_cell(ws.cell(row + iv, col), oc_colors[1])
+    row += len(on_call.volunteers)
+
+    return row + 1
 
 f_colors = ["FFFF59", "FFFFA6", "FFFF83"]
 def fill_fridge(start_row, start_col, f_shifts, wb):
@@ -69,6 +94,7 @@ def fill_fridge(start_row, start_col, f_shifts, wb):
         ci += 1
         if ci == 3:
             ci = 1
+    return row + 1
 
 pm_colors = ["FFB17B", "FFE1CB", "FFC194"]
 def fill_produce_market(start_row, start_col, pm_shifts, wb):
@@ -201,7 +227,7 @@ def fill_community_eats(start_row, start_col, ce_shifts, wb):
         ci += 1
         if ci == 3:
             ci = 1
-    return start_row
+    return row
 
 
 prep_colors = ["D684FF", "E2A9FF", "EBC3FF"]
@@ -280,7 +306,7 @@ def fill_cafe(cafe_shifts, wb):
     row = 3
     for i in range(len(cafe_shifts) + 1):
         if i > 0 and i % 4 == 0 or i >= len(cafe_shifts):
-            row += max(cafe_shifts, key=lambda s: s.capacity).capacity
+            row += cafe_shifts[i-1].capacity
             ci = (ci + 1) % 2
             if i >= len(cafe_shifts):
                 break
