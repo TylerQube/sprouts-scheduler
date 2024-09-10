@@ -106,25 +106,25 @@ def run_scheduler(shifts, vollies):
     print(f"{len(timed_shift_volunteers)} / {len(vollies)} volunteers scheduled for timed shifts")
     print(f"{len(all_volunteers)} / {len(vollies)} volunteers scheduled for any shift (including on-call)")
     print(f"{num_timed_filled_positions} / {num_timed_spaces} timed positions filled")
-    print(f"{num_all_filled_positions} / {num_total_spaces} of all positions filled (including on call)")
+    print(f"{num_all_filled_positions} / {num_total_spaces} of all positions filled (including on-call)")
     print()
     
     for v in vollies:
         if v.name not in all_volunteers:
-            print(f"{v.name} not scheduled {v.availability}")
+            print(f"{v.name} not scheduled")
     print()
 
 
 
 shift_capacity = {
     "SPROUTS CAFE HELPER": {
-        "9am-11am": 8,
-        "11am-1pm": 8,
-        "1pm-3pm": 8,
-        "3pm-5pm": 6
+        "9am-11am": 6,
+        "11am-1pm": 6,
+        "1pm-3pm": 6,
+        "3pm-5pm": 5
     },
     "PREP": 6,
-    "COMMUNITY EATS SERVER": 8,
+    "COMMUNITY EATS SERVER": 7,
     #MARKET
     "MARKET SET-UP": 2,
     "PRODUCE POSSE": 2,
