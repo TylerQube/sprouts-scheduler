@@ -10,7 +10,7 @@ Please contact Tyler with any issues, program is a bit finicky at the moment
 - Volunteers priority is given in order of form submission
 - Volunteers cannot be double-booked for timed shifts (e.g. cafe, produce market)
 - Volunteers can be double booked for "On-Call" positions (e.g. donation driver, fridge)
-- Shifts in the `shifts.yaml` must match the corresponding shifts from the Google form, or the program will fail to properly recognize volunteer availability
+- If there aren't enough volunteers to fill all shifts, the scheduler attempts to evenly distribute volunteers as much as possible
 
 
 ## Run Locally
@@ -27,7 +27,7 @@ Go to the project directory
   cd sprouts-scheduler
 ```
 
-Install dependencies
+Install dependencies (optionally in a virtual environment)
 
 ```bash
   python -m venv venv
