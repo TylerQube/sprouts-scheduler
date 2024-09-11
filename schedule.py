@@ -4,11 +4,14 @@ import sheet_builder
 import time
 from shift import Shift
 
-MAX_TIME = 5.0
+MAX_TIME = 1.0
 def schedule_volunteers(
-    shifts, volunteers, v_index, cur_schedule, best_schedule, start_time
+    shifts, volunteers, v_index, cur_schedule, best_schedule, num_positions, start_time
 ):
     if time.time() - start_time > MAX_TIME:
+        return
+
+    if len(best_schedule) >= num_positions:
         return
 
     if v_index == len(volunteers):
@@ -36,12 +39,20 @@ def schedule_volunteers(
             continue
         match = False
         if shift in v.availability and shift.add_volunteer(v.name):
+            if v.name == "Grace Zhang":
+                for s in v.availability:
+                    if shift == s:
+                        print(s)
+                print(f"Grace @ {shift.initiative} on {shift.day} @ {shift.time}")
+                print(shift in v.availability)
+                print(v.availability)
+                print()
             match = True
         if not match:
             continue
         cur_schedule.append((v.name, shift))
         schedule_volunteers(
-            shifts, volunteers, v_index + 1, cur_schedule, best_schedule, start_time
+            shifts, volunteers, v_index + 1, cur_schedule, best_schedule, num_positions, start_time
         )
         shift.remove_volunteer(v.name)
         cur_schedule.pop()
@@ -49,7 +60,7 @@ def schedule_volunteers(
 
     if not is_assigned:
         schedule_volunteers(
-            shifts, volunteers, v_index + 1, cur_schedule, best_schedule, start_time
+            shifts, volunteers, v_index + 1, cur_schedule, best_schedule, num_positions, start_time
         )
 
 def schedule_on_call(shifts, volunteers):
@@ -69,23 +80,39 @@ def run_scheduler(shifts, vollies):
     print("Scheduling volunteers...")
     schedule = []
     start = time.time()
-    schedule_volunteers(shifts, vollies, 0, [], schedule, time.time())
+
+    num_timed_spaces = 0
+    for s in shifts:
+        on_call = "on-call" in s.initiative.lower() or "on-call" in s.day.lower() or "on-call" in s.time.lower() 
+        if not on_call:
+            num_timed_spaces += s.capacity
+
+    schedule_volunteers(shifts, vollies, 0, [], schedule, num_timed_spaces, time.time())
     for pair in schedule:
         for s in shifts:
             if s == pair[1]:
                 pair[1].add_volunteer(pair[0])
     schedule_on_call(shifts, vollies)
 
+
+
+
     timed_shift_volunteers = set()
     all_volunteers = set()
     num_timed_filled_positions = 0
     num_all_filled_positions = 0
-    num_timed_spaces = 0
     num_total_spaces = 0
     for s in shifts:
         for v in s.volunteers:
-            if s not in next((vo for vo in vollies if vo.name == v), None).availability:
+            v = next((vo for vo in vollies if vo.name == v), None)
+            if s not in v.availability:
+                print(f"{v.name} mischeduled")
                 raise Exception("Scheduled volunteer outside of availability")
+            else:
+                if v.name == "Grace Zhang":
+                    print(f"{v.name} is properly scheduled for {s.initiative} on {s.day} at {s.time}")
+                    print(f"{v.availability}")
+                    print()
 
         on_call = "on-call" in s.initiative.lower() or "on-call" in s.day.lower() or "on-call" in s.time.lower() 
         all_volunteers.update(s.volunteers)
@@ -93,7 +120,6 @@ def run_scheduler(shifts, vollies):
         num_all_filled_positions += len(s.volunteers)
         if not on_call:
             timed_shift_volunteers.update(s.volunteers)
-            num_timed_spaces += s.capacity
             num_timed_filled_positions += len(s.volunteers)
 
     assert len(timed_shift_volunteers) == num_timed_filled_positions

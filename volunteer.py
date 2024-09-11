@@ -19,7 +19,13 @@ class Volunteer:
                 continue
 
 
-            self.availability += available_from_form_column(column, value)
+            avails = available_from_form_column(column, value) 
+            if self.name == "Grace Zhang":
+                print(self.name)
+                print(f"{column} // {value}")
+                print(avails)
+                print()
+            self.availability += avails
 
 def load_volunteers(table):
     vollies = []
@@ -81,6 +87,7 @@ def available_from_form_column(column, value):
         if d.lower() in column.lower():
             day = d
             break
+
     
     if "on-call volunteer" in column:
         if "no" in value.lower():

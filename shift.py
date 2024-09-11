@@ -27,9 +27,7 @@ class Shift:
     def __eq__(self, other):
         if not isinstance(other, Shift):
             return False
-        return ((self.initiative == other.initiative) 
-                and (self.day == other.day) 
-                and (self.time == self.time))
+        return self.__repr__() == other.__repr__()
     def __ne__(self, other):
         return (not self.__eq__(other))
     def __hash__(self):
