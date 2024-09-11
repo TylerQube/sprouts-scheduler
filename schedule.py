@@ -39,14 +39,6 @@ def schedule_volunteers(
             continue
         match = False
         if shift in v.availability and shift.add_volunteer(v.name):
-            if v.name == "Grace Zhang":
-                for s in v.availability:
-                    if shift == s:
-                        print(s)
-                print(f"Grace @ {shift.initiative} on {shift.day} @ {shift.time}")
-                print(shift in v.availability)
-                print(v.availability)
-                print()
             match = True
         if not match:
             continue
@@ -108,11 +100,6 @@ def run_scheduler(shifts, vollies):
             if s not in v.availability:
                 print(f"{v.name} mischeduled")
                 raise Exception("Scheduled volunteer outside of availability")
-            else:
-                if v.name == "Grace Zhang":
-                    print(f"{v.name} is properly scheduled for {s.initiative} on {s.day} at {s.time}")
-                    print(f"{v.availability}")
-                    print()
 
         on_call = "on-call" in s.initiative.lower() or "on-call" in s.day.lower() or "on-call" in s.time.lower() 
         all_volunteers.update(s.volunteers)

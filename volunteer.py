@@ -20,11 +20,6 @@ class Volunteer:
 
 
             avails = available_from_form_column(column, value) 
-            if self.name == "Grace Zhang":
-                print(self.name)
-                print(f"{column} // {value}")
-                print(avails)
-                print()
             self.availability += avails
 
 def load_volunteers(table):
