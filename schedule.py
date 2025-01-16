@@ -128,29 +128,24 @@ def run_scheduler(shifts, vollies):
 
 shift_capacity = {
     "SPROUTS CAFE HELPER": {
-        "9am-11am": 6,
-        "11am-1pm": 6,
-        "1pm-3pm": 6,
-        "3pm-5pm": 5
+        "9-11am": 7,
+        "11am-1pm": 7,
+        "1pm-3pm": 7,
+        "3pm-5pm": 7
     },
     "PREP": 6,
     "COMMUNITY EATS SERVER": 7,
     #MARKET
-    "MARKET SET-UP": 2,
-    "PRODUCE POSSE": 2,
+    "PRODUCE MARKET": 3,
     #DRIVER
     "DONATION DRIVER": 2,
     # FRIDGE
-    "STOCKING SQUAD": 2,
-    "CLEANUP CREW": 2,
-    "ON-CALL": 20
+    "FRIDGE": 3
 }
 def get_shift_capacity(initiative, day, time):
     if "on-call" in initiative.lower():
         return 200 
 
-    if "on-call" in time.lower() or "n/a" in day.lower():
-        return shift_capacity["ON-CALL"]
     if "cafe" in initiative.lower():
         return shift_capacity["SPROUTS CAFE HELPER"][time.lower()]
     else:

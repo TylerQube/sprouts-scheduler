@@ -19,15 +19,8 @@ def build_spreadsheet(shifts):
     pm_shifts = list(filter(lambda s: s.initiative == "PRODUCE POSSE" or s.initiative == "MARKET SET-UP", shifts))
     fill_produce_market(next_row, 7, pm_shifts, wb)
 
-    sm_shifts = list(filter(lambda s: s.initiative == "DONATION DRIVER", shifts))
-    next_row = fill_sproutsmobile(next_row, 4, sm_shifts, wb)
-
     fridge_shifts = list(filter(lambda s: s.initiative == "STOCKING SQUAD" or s.initiative == "CLEANUP CREW", shifts))
     fill_fridge(next_row, 4, fridge_shifts, wb)
-
-    oc_shifts = list(filter(lambda s: s.initiative == "ON-CALL", shifts))
-    fill_oncall(oncall_row + 1, 1, oc_shifts, wb)
-
 
     wb.save("output.xlsx")
 
@@ -283,7 +276,7 @@ def fill_cafe(cafe_shifts, wb):
     # sort in grid order
     cafe_shifts.sort(
         key=lambda s: (
-            ["9am-11am", "11am-1pm", "1pm-3pm", "3pm-5pm"].index(s.time),
+            ["9-11am", "11am-1pm", "1pm-3pm", "3pm-5pm"].index(s.time),
             ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].index(s.day),
         )
     )
